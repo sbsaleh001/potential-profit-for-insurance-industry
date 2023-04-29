@@ -1,0 +1,289 @@
+---
+title: "A2"
+author: "Saleh Babaei"
+output:
+  flexdashboard::flex_dashboard: default
+  html_document:
+    df_print: paged
+  orientation: rows
+  vertical_layout: scroll
+  storyboard: true
+runtime: shiny
+
+---
+
+
+
+Sidebar {.sidebar}
+=====================================
+- Overview
+
+- Data
+
+- Useful data
+
+- Code and techniques
+
+- Visualization
+
+- Design
+
+- Declaration
+
+
+Overview
+=====================================
+
+### Making the highest profit as an Insurance Company
+
+![**Cost of Insurance in USA**](/Users/salehbabaei/Desktop/2021/Sem II/BDM 400/Assignment 2/images/insurance-companies.jpeg)
+
+
+
+Data
+=====================================
+
+```{r, message=FALSE, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(plotly)
+library(shiny)
+library(usmap)
+```
+
+
+
+### Loading data
+
+```{r, echo=TRUE}
+data <- read.csv(file = "sheet_1_cost_of_auto_insuranc copy.csv") 
+head(data)
+```
+
+
+Data insights
+=====================================
+
+Column{.tabset}
+-------------------------------------
+
+### Making data useful
+
+![zoZan](/Users/salehbabaei/Desktop/2021/Sem II/BDM 400/Assignment 2/images/Profit.jpeg){#id .class width=50% height=50%}
+
+
+
+
+
+### getting the most out of the data
+
+We assume that **minimum coverage** is going to cover all the cost for the insurance company
+
+So as the rate gets closer to the **full coverage**, the insurance company gains more profit
+
+```{r}
+head(data)
+```
+
+
+
+### Adding a new coloumn named **Profit**
+```{r, echo=TRUE}
+data <- data %>% 
+  mutate(profit = round(difference * 100/ minimum_coverage,1) ) %>% 
+  arrange(desc(profit))
+```
+
+```{r}
+head(data)
+```
+
+
+
+
+
+Code and Techniques
+=====================================
+
+rows {.tabset}
+-------------------------------------
+
+### **Step 1:** Ordinary bar_chart
+
+```{r echo = T, results = 'hide'}
+p <- ggplot(data, aes(x = reorder(state, -profit), y = profit)) +
+      coord_flip() +
+      geom_bar(stat = "identity") 
+      
+
+
+ggplotly(p)
+```
+
+### Visual
+
+```{r}
+ggplotly(p)
+```
+
+
+### **Step 2:** Appropriate titles
+
+```{r echo = T, results = 'hide'}
+p <- ggplot(data, aes(x = reorder(state, -profit), y = profit)) +
+      geom_bar(stat = "identity") +
+      coord_flip() +
+      ggtitle("Potential Profit For Each State") +
+      xlab("State") +
+      ylab("% Profit") 
+  
+
+
+ggplotly(p)
+```
+
+### Visual
+
+```{r}
+ggplotly(p)
+```
+
+
+
+### **Step 3:** Adding colors
+
+```{r echo = T, results = 'hide'}
+p <- ggplot(data, aes(x = reorder(state, -profit), y = profit)) +
+      geom_bar(stat = "identity", aes(fill = profit > 250), color = 'skyblue') +
+  
+      ggtitle("Potential Profit For Each State") +
+      xlab("State") +
+      ylab("% Profit") +
+  
+      coord_flip() +
+
+      scale_fill_manual(values = c('steelblue', 'red'), guide="none")
+
+ggplotly(p)
+```
+
+### Visual
+
+```{r}
+ggplotly(p)
+```
+
+
+
+
+### **Step 4:** storyboard
+
+```{r echo = T, results = 'hide'}
+
+p <-  ggplot(data, aes(x = reorder(state, -profit), y = profit)) +
+      geom_bar(stat = "identity", aes(fill = profit > 250)) +
+
+  
+      ggtitle("Potential Profit For Each State") +
+      xlab("State") +
+      ylab("% Profit") +
+  
+      coord_flip() +
+
+      scale_fill_manual(values = c('steelblue', 'red'), guide="none") +
+  
+      theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position = "none")
+
+
+
+```
+
+### Visual
+
+```{r}
+ggplotly(p)
+```
+
+
+
+
+
+### **Step 5:** storyboard US map
+
+```{r echo = T, results = 'hide'}
+ p <- plot_usmap(data = data, values = "profit", color = "red", labels = TRUE) + 
+        scale_fill_continuous(low = "white", high = "red", name = "Profit", label = scales::comma) + 
+        theme(legend.position = "right")
+```
+
+### Visual
+
+```{r}
+ggplotly(p)
+```
+
+
+
+Visualization
+=====================================
+
+Column{.tabset}
+---
+
+### Input
+
+```{r}
+sliderInput("min_profit", label = "minimum profit to highlight",
+            min = min(data$profit), max = max(data$profit), step = 5, value = 250)
+```
+
+
+### Graph 1
+```{r}
+renderPlotly({
+  ggplot(data, aes(x = reorder(state, -profit), y = profit)) +
+      geom_bar(stat = "identity", aes(fill = profit > as.numeric(input$min_profit))) +
+
+  
+      ggtitle("Potential Profit For Each State") +
+      xlab("State") +
+      ylab("% Profit") +
+  
+      coord_flip() +
+
+      scale_fill_manual(values = c('steelblue', 'red'), guide="none") +
+  
+      theme_bw() + theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"), legend.position = "none")
+})
+```
+
+### Graph 2
+
+```{r}
+p <- plot_usmap(data = data, values = "profit", color = "red", labels = TRUE) + 
+        scale_fill_continuous(low = "white", high = "red", name = "Profit", label = scales::comma) + 
+        theme(legend.position = "right")
+ggplotly(p)
+```
+
+
+
+Design
+=====================================
+
+### Why are the visuals effective
+
+- Low **ink/data** ratio
+
+- **Interactive** graphs
+
+- States with the most *potential profit* are **highlighted** effitienly
+
+Declaration
+=====================================
+
+### Declaration
+
+I, *Saleh Babaei*, declare that the attached assignment is my own work in accordance with the Seneca Academic Policy.  I have not copied any part of this assignment, manually or electronically, from any other source including web sites, unless specified as references. I have not distributed my work to other students.
