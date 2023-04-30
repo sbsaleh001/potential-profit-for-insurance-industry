@@ -1,4 +1,4 @@
-# potential-profit-for-insurance-industry
+# potential profit for insurance industry
 Developed an interactive web page using Flex Dashboard to display potential profits for the insurance industry in each US state. The dashboard combines data from multiple sources and presents it in an easy-to-understand format, allowing users to analyze and compare profitability across different states.
 
 Implemented interactive features such as dropdown menus, sliders, and maps to enhance the user experience and enable dynamic data exploration. Utilized R statistical modeling and Shiny app development to create a user-friendly interface that allows for customization and ad-hoc data analysis.
