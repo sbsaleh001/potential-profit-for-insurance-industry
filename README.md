@@ -5,4 +5,4 @@ Implemented interactive features such as dropdown menus, sliders, and maps to en
 
 This project showcases expertise in data analysis, statistical modeling, and web development. The interactive web page serves as a powerful tool for decision-makers in the insurance industry to identify potential opportunities and allocate resources effectively. The code and resources provided are adaptable for future projects and can be customized to suit the needs of different industries and applications.
 
-! [Interactive FlexDashboard](images/interactive flexdashboard.gif)
+![Animation](images/interactive flexdashboard.gif)
